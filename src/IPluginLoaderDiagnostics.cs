@@ -1,7 +1,7 @@
 namespace Hosihikari;
 
 /// <summary>
-/// 加载器的可选预检接缝。管理者在 <see cref="IPluginLoader.CanLoad"/> 之后、<see cref="IPluginLoader.Load"/>
+/// 加载器的可选预检接缝。管理器在 <see cref="IPluginLoader.CanLoad"/> 之后、<see cref="IPluginLoader.Load"/>
 /// 之前调用它；问题并入加载报告，装载不会开始（ADR-0041）。
 /// </summary>
 public interface IPluginLoaderDiagnostics

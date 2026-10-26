@@ -1,12 +1,12 @@
 namespace Hosihikari;
 
-/// <summary>某一插件种类的加载器（ADR-0002）。管理者只认这个契约，不认识 ALC 与脚本引擎（ADR-0010）。</summary>
+/// <summary>某一插件种类的加载器（ADR-0002）。管理器只认这个契约，不认识 ALC 与脚本引擎（ADR-0010）。</summary>
 public interface IPluginLoader
 {
     /// <summary>清单 <c>extraInfo.loader</c> 的取值。</summary>
     string Id { get; }
 
-    /// <summary>能不能处理这个包。管理者据此在多个加载器之间选型。</summary>
+    /// <summary>能不能处理这个包。管理器据此在多个加载器之间选型。</summary>
     /// <param name="manifest">包内清单。</param>
     /// <returns>能处理返回 <see langword="true"/>。</returns>
     bool CanLoad(PluginManifest manifest);

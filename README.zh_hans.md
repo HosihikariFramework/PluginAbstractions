@@ -59,7 +59,7 @@ public sealed class MyPlugin : IPlugin
 
 ## 加载器诊断
 
-加载器可以实现可选的 `IPluginLoaderDiagnostics` 伴随接口。管理者在 `CanLoad` 选中加载器之后、
+加载器可以实现可选的 `IPluginLoaderDiagnostics` 伴随接口。管理器在 `CanLoad` 选中加载器之后、
 `Load` 开始之前调用 `Validate(manifest, packageDirectory)`；返回非空列表时，问题进入装载报告并
 跳过该包，空列表则继续装载。
 
