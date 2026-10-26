@@ -45,9 +45,9 @@ F#（`Hosihikari.Plugin.Templates.FSharp/`）：
 - `Hosihikari.Plugin.Templates.FSharp.fsproj` —— net10.0 F# 类库，同样引用契约。
 - `Plugin.fs` —— `IPlugin` 实现与非泛型入口特性。
 
-两个模板都带 `manifest.json`（`loader: assembly`）、`pack.ps1` / `pack.sh`（构建后调用插件管理者打包器的
+两个模板都带 `manifest.json`（`loader: assembly`）、`pack.ps1` / `pack.sh`（构建后调用插件管理器打包器的
 `pack-plugin`，按规范剔除共享层）与双语插件 README。F# 模板会把 `FSharp.Core.dll` 一并放进插件包，
-因为插件管理者的共享层不含它。
+因为插件管理器的共享层不含它。
 
 ## 命名约束
 
