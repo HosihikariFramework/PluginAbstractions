@@ -39,4 +39,4 @@ For template changes, install the packed template, generate both languages, and 
 
 - Design decisions and terminology are kept by maintainers outside the public repositories; ask for
   the relevant decision when changing lifecycle or public API.
-- [Documentation](https://hf.srcz.one/) — plugin authoring guides.
+- [Documentation](https://hoshi.srcz.one/) — plugin authoring guides.
