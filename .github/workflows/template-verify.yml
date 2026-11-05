@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@v7
         with:
           repository: HosihikariFramework/PluginManager
+          # 配对的核心 PR 分支：模板用的 Build 包还没发布，先按分支取。
+          ref: feat/manifest-rules
           path: PluginManager
 
       - uses: actions/checkout@v7
