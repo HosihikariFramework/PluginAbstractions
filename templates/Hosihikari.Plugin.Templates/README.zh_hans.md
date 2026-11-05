@@ -15,13 +15,13 @@
 
 ```bash
 dotnet pack Hosihikari.Plugin.Templates.csproj -c Release -o artifacts
-dotnet new install artifacts/Hosihikari.Plugin.Templates.1.0.1.nupkg
+dotnet new install artifacts/Hosihikari.Plugin.Templates.1.1.0.nupkg
 
 dotnet new hosihikari-plugin -n MyPlugin -o MyPlugin
 dotnet new hosihikari-plugin-fsharp -n MyFSharpPlugin -o MyFSharpPlugin
 ```
 
-然后在并列的 `PluginManager` checkout 下分别构建并打包：
+然后分别构建并打包：
 
 ```bash
 cd MyPlugin

@@ -16,13 +16,13 @@ For source-compiled plugins, see
 
 ```bash
 dotnet pack Hosihikari.Plugin.Templates.csproj -c Release -o artifacts
-dotnet new install artifacts/Hosihikari.Plugin.Templates.1.0.1.nupkg
+dotnet new install artifacts/Hosihikari.Plugin.Templates.1.1.0.nupkg
 
 dotnet new hosihikari-plugin -n MyPlugin -o MyPlugin
 dotnet new hosihikari-plugin-fsharp -n MyFSharpPlugin -o MyFSharpPlugin
 ```
 
-Then build and pack each generated plugin with a sibling `PluginManager` checkout:
+Then build and pack each generated plugin:
 
 ```bash
 cd MyPlugin

@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>Hosihikari.Plugin.Abstractions</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>HosihikariFramework</Authors>
     <Description>Plugin contract for the Hosihikari framework: IPlugin, IPluginContext, IPluginLoader, host services and the plugin manifest.</Description>
     <!-- 0.7.0 was published under LGPL; 0.7.1 and later are MIT. -->

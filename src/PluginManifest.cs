@@ -65,6 +65,16 @@ public sealed class PluginManifest
         ExtraInfo.TryGetValue("manifest_version", out var value) && value.ValueKind == JsonValueKind.String
             ? value.GetString()
             : null;
+
+    /// <summary>
+    /// 包类型（ADR-0006）：<c>plugin</c>（缺省）、<c>loader</c> 或 <c>carrier</c>。
+    /// 只有插件要求对框架的依赖；载体包按它跳过自持态扫描。
+    /// </summary>
+    [JsonIgnore]
+    public string PackageKind =>
+        ExtraInfo.TryGetValue("packageKind", out var value) && value.ValueKind == JsonValueKind.String
+            ? value.GetString() ?? "plugin"
+            : "plugin";
 }
 
 /// <summary>一条依赖声明。</summary>

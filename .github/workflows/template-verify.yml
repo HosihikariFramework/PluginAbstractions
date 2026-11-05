@@ -13,10 +13,12 @@ jobs:
         with:
           path: Plugin.Abstractions
 
-      # 打包器在核心仓；fork 让核心按源码编。
+      # 打包器以 NuGet 包 Hosihikari.Plugin.Build 交付；核心仓只在本地发版时用来打这个包。
       - uses: actions/checkout@v7
         with:
           repository: HosihikariFramework/PluginManager
+          # 配对的核心 PR 分支：模板用的 Build 包还没发布，先按分支取。
+          ref: feat/manifest-rules
           path: PluginManager
 
       - uses: actions/checkout@v7
@@ -33,6 +35,7 @@ jobs:
         run: |
           set -euo pipefail
           dotnet pack Plugin.Abstractions/src/Hosihikari.Plugin.Abstractions.csproj -c Release -o artifacts
+          dotnet pack PluginManager/tools/Build/Hosihikari.Plugin.Build.csproj -c Release -o artifacts
           dotnet pack Plugin.Abstractions/templates/Hosihikari.Plugin.Templates/Hosihikari.Plugin.Templates.csproj -c Release -o artifacts
           dotnet nuget add source "$PWD/artifacts" -n local
 
@@ -53,14 +56,13 @@ jobs:
           dotnet build "$RUNNER_TEMP/HelloFSharp/HelloFSharp.fsproj" -c Release
 
       - name: 打插件包
-        env:
-          HOSIHIKARI_PLUGINMANAGER: ${{ github.workspace }}/PluginManager
         run: |
           set -euo pipefail
           cd "$RUNNER_TEMP/HelloTemplate"
           bash ./pack.sh
           test -f dist/HelloTemplate/HelloTemplate.dll
           test -f dist/HelloTemplate/manifest.json
+          grep -q '"hosihikari"' dist/HelloTemplate/manifest.json
           if find dist/HelloTemplate -name 'Hosihikari.Plugin.Abstractions.dll' | grep -q .; then
             echo 'the shared contract leaked into the C# plugin package' >&2
             exit 1

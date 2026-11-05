@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Build the plugin and assemble a package with the framework's packer.
+# Pack the plugin through Hosihikari.Plugin.Build's PackPlugin target.
 #
-# Requires a sibling PluginManager checkout, or HOSIHIKARI_PLUGINMANAGER.
+# The manifest is generated from the project.
 # Usage: bash ./pack.sh [output-root]
 set -euo pipefail
 
@@ -13,14 +13,5 @@ case "$root" in
     *) root="$here/$root" ;;
 esac
 
-dotnet build "$here/$name.fsproj" -c Release --nologo
-output="$here/bin/Release/net10.0"
-
-core=${HOSIHIKARI_PLUGINMANAGER:-"$(cd "$here/.." && pwd)/PluginManager"}
-pack_tool="$core/tools/Pack/Hosihikari.Plugin.Pack.csproj"
-if [ ! -f "$pack_tool" ]; then
-    echo "找不到核心打包器：$pack_tool。请并列检出 PluginManager，或设置 HOSIHIKARI_PLUGINMANAGER。" >&2
-    exit 1
-fi
-
-dotnet run --project "$pack_tool" -c Release -- pack-plugin "$output" "$here/manifest.json" "$root"
+dotnet build "$here/$name.fsproj" -c Release --nologo \
+    -t:PackPlugin "-p:HosihikariPluginOutputRoot=$root"

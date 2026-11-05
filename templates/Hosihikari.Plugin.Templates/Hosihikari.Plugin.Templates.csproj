@@ -4,8 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <PackageType>Template</PackageType>
     <PackageId>Hosihikari.Plugin.Templates</PackageId>
-    <Version>1.0.1</Version>
-    <PackageVersion>1.0.1</PackageVersion>
+    <Version>1.1.0</Version>
+    <PackageVersion>1.1.0</PackageVersion>
     <Title>Hosihikari plugin templates</Title>
     <Authors>星光</Authors>
     <Description>dotnet new template for a precompiled Hosihikari plugin.</Description>

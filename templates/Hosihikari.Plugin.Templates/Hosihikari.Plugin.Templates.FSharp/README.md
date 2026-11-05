@@ -5,8 +5,8 @@ package is required.
 
 ## Build and pack
 
-Requires the .NET 10 SDK and a sibling `PluginManager` checkout (or
-`HOSIHIKARI_PLUGINMANAGER` pointing at one).
+Requires the .NET 10 SDK. Packing goes through the `Hosihikari.Plugin.Build` package; the manifest is
+generated from the project.
 
 ```powershell
 pwsh ./pack.ps1

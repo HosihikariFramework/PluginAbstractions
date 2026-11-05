@@ -4,8 +4,7 @@
 
 ## 构建与打包
 
-需要 .NET 10 SDK，以及并列的 `PluginManager` checkout（或设置
-`HOSIHIKARI_PLUGINMANAGER`）。
+需要 .NET 10 SDK。打包走 `Hosihikari.Plugin.Build` 包，不需要并列检出框架；清单由项目生成。
 
 ```powershell
 pwsh ./pack.ps1
@@ -15,8 +14,7 @@ pwsh ./pack.ps1
 bash ./pack.sh
 ```
 
-打包器会剔除共享层，在 `dist/Hosihikari.Plugin.Templates/` 产出插件 DLL、私有依赖与
-`manifest.json`。把这个目录复制到 `<服务端>/plugins/Hosihikari.Plugin.Templates/`。
+打包器会剔除共享层，在项目旁的 `dist/` 里产出插件 DLL、私有依赖与生成的 `manifest.json`。把这个目录复制到 `<服务端>/plugins/Hosihikari.Plugin.Templates/`。
 
 ## 命名
 

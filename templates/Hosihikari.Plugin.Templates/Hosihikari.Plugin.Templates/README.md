@@ -5,8 +5,8 @@ package is required.
 
 ## Build and pack
 
-Requires the .NET 10 SDK and a sibling `PluginManager` checkout (or
-`HOSIHIKARI_PLUGINMANAGER` pointing at one).
+Requires the .NET 10 SDK. Packing goes through the `Hosihikari.Plugin.Build` package; the manifest is
+generated from the project.
 
 ```powershell
 pwsh ./pack.ps1
@@ -16,8 +16,8 @@ pwsh ./pack.ps1
 bash ./pack.sh
 ```
 
-The packer strips the shared layer and writes `dist/Hosihikari.Plugin.Templates/` with the plugin
-DLL, its private dependencies, and `manifest.json`. Copy that directory to
+The packer strips the shared layer and writes the package next to the project with the plugin DLL,
+its private dependencies, and the generated `manifest.json`. Copy that directory to
 `<server>/plugins/Hosihikari.Plugin.Templates/`.
 
 ## Naming
