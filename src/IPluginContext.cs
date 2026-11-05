@@ -21,7 +21,10 @@ public interface IPluginContext
     /// <summary>已按「包内默认 → 包外覆盖 → 环境变量」叠好的配置（ADR-0018）。</summary>
     IConfiguration Configuration { get; }
 
-    /// <summary>事件总线。订阅是全局的 —— 插件必须在 <c>OnUnload</c> 里退订（ADR-0004）。</summary>
+    /// <summary>
+    /// 事件总线。订阅由插件作用域持有，卸载时框架统一收回（ADR-0007）；仍在 <c>OnUnload</c> 里显式退订
+    /// 是好习惯，漏退不会把 ALC 钉死，但会让卸载多活一轮回收验证（ADR-0004）。
+    /// </summary>
     IEventBus Events { get; }
 
     /// <summary>调度器。跑在线程池上，不承诺游戏主线程（ADR-0013）。</summary>

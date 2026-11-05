@@ -9,7 +9,7 @@
 ## 引用
 
 ```xml
-<PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[1.1.0]" ExcludeAssets="runtime" />
+<PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[1.2.0]" ExcludeAssets="runtime" />
 ```
 
 **`ExcludeAssets="runtime"` 不能省。** 契约驻留在**共享层** —— 宿主已经载入过这一份；插件包里若再带一份，就是同一个类型名下的第二个身份，插件转型会在运行期失败（而且报错点离病因很远）。
@@ -55,7 +55,7 @@ public sealed class MyPlugin : IPlugin
 }
 ```
 
-`type` 是父级加载器的路由键，恒为 `hosihikari`；`extraInfo.loader` 决定由哪个加载器处理 —— **怎么从包里找到入口，是那个加载器自己的事**。`api_version` 与 `manifest_version` 必须分别等于 `PluginContractInfo.CurrentApiVersion` 与 `PluginContractInfo.CurrentManifestVersion`；`entry` 必须是包内相对路径。不满足的包在**载入之前**就会被剔除并给出可读报告。
+`dependencies` 必须包含 `hosihikari`，父级才会先装寄宿垫片。`type` 是父级加载器的路由键，恒为 `hosihikari`；`extraInfo.loader` 决定由哪个加载器处理 —— **怎么从包里找到入口，是那个加载器自己的事**。`api_version` 与 `manifest_version` 必须分别等于 `PluginContractInfo.CurrentApiVersion` 与 `PluginContractInfo.CurrentManifestVersion`；`entry` 必须是包内相对路径。不满足的包在**载入之前**就会被剔除并给出可读报告。
 
 ## 加载器诊断
 

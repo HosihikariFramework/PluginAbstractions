@@ -14,6 +14,47 @@ public static class PluginContractInfo
     /// 它是父级命名空间里的一等名字：插件靠 <c>dependencies</c> 声明对它的依赖来保证排序。
     /// </summary>
     public const string ParentName = "hosihikari";
+
+    /// <summary>
+    /// 共享层的基地清单：契约与它的抽象包。载体把自己的绑定程序集经 <see cref="AddSharedAssemblies"/>
+    /// 追加在后面，加载器与打包器都读同一份（ADR-0019 / 0026）。文件名同时用于加载期的身份判定与打包期的副本剔除。
+    /// </summary>
+    public static IReadOnlyList<string> SharedAssemblyFileNames
+    {
+        get
+        {
+            lock (SharedGate)
+            {
+                return [.. SharedNames];
+            }
+        }
+    }
+
+    /// <summary>追加载体声明的共享层程序集；重复追加按文件名去重。载体在装载任何插件之前调用。</summary>
+    public static void AddSharedAssemblies(IEnumerable<string> fileNames)
+    {
+        lock (SharedGate)
+        {
+            foreach (var name in fileNames)
+            {
+                if (!SharedNames.Contains(name, StringComparer.OrdinalIgnoreCase))
+                {
+                    SharedNames.Add(name);
+                }
+            }
+        }
+    }
+
+    private static readonly Lock SharedGate = new();
+
+    private static readonly List<string> SharedNames =
+    [
+        "Hosihikari.Plugin.Abstractions.dll",
+        "Microsoft.Extensions.Configuration.Abstractions.dll",
+        "Microsoft.Extensions.Logging.Abstractions.dll",
+        "Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "Microsoft.Extensions.Primitives.dll",
+    ];
 }
 
 /// <summary>

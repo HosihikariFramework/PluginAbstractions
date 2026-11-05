@@ -11,7 +11,7 @@ The framework itself and the other packages live under
 ## Referencing it
 
 ```xml
-<PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[1.1.0]" ExcludeAssets="runtime" />
+<PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[1.2.0]" ExcludeAssets="runtime" />
 ```
 
 **`ExcludeAssets="runtime"` is not optional.** The contract lives in the **shared layer** — the
@@ -63,7 +63,7 @@ A plugin package is a directory; the directory name is the plugin name, and it m
 }
 ```
 
-`type` is the parent loader's routing key and is always `hosihikari`. `extraInfo.loader` picks
+`dependencies` must include `hosihikari` so the parent loads the shim first. `type` is the parent loader's routing key and is always `hosihikari`. `extraInfo.loader` picks
 the Loader that handles the package — **how to find the entry point inside the package is that
 Loader's business**. `api_version` and `manifest_version` must equal `PluginContractInfo.CurrentApiVersion` and
 `PluginContractInfo.CurrentManifestVersion`; `entry` must stay inside the package. A violation is rejected
