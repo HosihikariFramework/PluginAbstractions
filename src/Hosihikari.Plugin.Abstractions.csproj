@@ -29,8 +29,8 @@
 
   <ItemGroup>
     <!-- 只引抽象包（ADR-0007）：实现包留在 PluginManager，契约因此能驻留共享层。 -->
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.13" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.15" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.15" />
   </ItemGroup>
 
 </Project>
