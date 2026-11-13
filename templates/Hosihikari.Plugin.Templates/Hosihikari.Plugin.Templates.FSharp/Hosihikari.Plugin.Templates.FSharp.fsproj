@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <!-- 契约住在共享层，插件包里不该有第二份身份。 -->
-    <PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[1.2.0]" ExcludeAssets="runtime" />
+    <PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[3.0.0]" ExcludeAssets="runtime" />
     <!-- 打包目标；只在打包期起作用，不进插件包。 -->
     <PackageReference Include="Hosihikari.Plugin.Build" Version="[1.1.0]" PrivateAssets="all" />
   </ItemGroup>

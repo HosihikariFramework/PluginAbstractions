@@ -24,7 +24,8 @@ bash ./pack.sh
 ## 生命周期
 
 `OnLoad` 在依赖就绪后执行；`OnEnable` 打开事件/定时器闸门，拒绝则保持已加载未启用；
-`OnUnload` 释放插件持有的东西。钩子抛出异常属于故障，宿主会卸载插件。
+`OnUnload` 释放插件持有的东西。四个钩子都是异步的，带 `CancellationToken`。钩子抛出异常属于
+故障，宿主会卸载插件。
 
 需要源码编译的插件时，见
 [CSharpPluginTemplate](https://github.com/HosihikariFramework/CSharpPluginTemplate)、
@@ -34,4 +35,4 @@ bash ./pack.sh
 
 ## 许可
 
-模板脚手架为 MIT-0，见 [LICENSE.md](LICENSE.md)。本项目引用的框架契约（Abstractions 1.0.0）为 MIT。
+模板脚手架为 MIT-0，见 [LICENSE.md](LICENSE.md)。本项目引用的框架契约（Abstractions 3.0.0）为 MIT。

@@ -9,7 +9,7 @@
 ## 引用
 
 ```xml
-<PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[1.2.0]" ExcludeAssets="runtime" />
+<PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[3.0.0]" ExcludeAssets="runtime" />
 ```
 
 **`ExcludeAssets="runtime"` 不能省。** 契约驻留在**共享层** —— 宿主已经载入过这一份；插件包里若再带一份，就是同一个类型名下的第二个身份，插件转型会在运行期失败（而且报错点离病因很远）。
@@ -25,12 +25,19 @@ using Hosihikari;
 
 public sealed class MyPlugin : IPlugin
 {
-    public void OnLoad(IPluginContext context) =>
+    public ValueTask OnLoad(IPluginContext context, CancellationToken cancellationToken)
+    {
         context.Logger.LogInformation("载入：{Dir}", context.PackageDirectory);
+        return ValueTask.CompletedTask;
+    }
 
-    public PluginHookResult OnEnable() => PluginHookResult.Allow();
-    public PluginHookResult OnDisable() => PluginHookResult.Allow();
-    public void OnUnload() { }
+    public ValueTask<PluginHookResult> OnEnable(CancellationToken cancellationToken) =>
+        ValueTask.FromResult(PluginHookResult.Allow());
+
+    public ValueTask<PluginHookResult> OnDisable(CancellationToken cancellationToken) =>
+        ValueTask.FromResult(PluginHookResult.Allow());
+
+    public ValueTask OnUnload(CancellationToken cancellationToken) => ValueTask.CompletedTask;
 }
 ```
 
@@ -48,7 +55,7 @@ public sealed class MyPlugin : IPlugin
   "version": "1.0.0",
   "dependencies": [{ "name": "hosihikari" }],
   "extraInfo": {
-    "api_version": "2",
+    "api_version": "3",
     "manifest_version": "1",
     "loader": "assembly"
   }
@@ -61,21 +68,26 @@ public sealed class MyPlugin : IPlugin
 
 加载器可以实现可选的 `IPluginLoaderDiagnostics` 伴随接口。管理器在 `CanLoad` 选中加载器之后、
 `Load` 开始之前调用 `Validate(manifest, packageDirectory)`；返回非空列表时，问题进入装载报告并
-跳过该包，空列表则继续装载。
+跳过该包，空列表则继续装载。问题以 `PluginDiagnostic` 记录返回 —— 与钩子拒绝、`ReportFault`
+是同一种形状。
 
 ```csharp
-public IReadOnlyList<string> Validate(PluginManifest manifest, string packageDirectory)
+public IReadOnlyList<PluginDiagnostic> Validate(PluginManifest manifest, string packageDirectory)
 {
     var entryPath = Path.Combine(packageDirectory, manifest.EntryPath);
     return File.Exists(entryPath)
         ? []
-        : [$"入口不存在：{manifest.EntryPath}"];
+        : [PluginDiagnostic.Error("entry-missing", $"入口不存在：{manifest.EntryPath}")];
 }
 ```
+
+加载器本身就是一个 `kind: loader` 的插件包，它拿到 `ILoaderContext` —— 插件上下文加上
+`RegisterLoader`；普通插件拿到的仍是 `IPluginContext`。
 
 ## 作者要知道的几条
 
 - **钩子只承诺顺序与幂等**，不承诺它们落在服务器的哪个阶段 —— `OnEnable` 时世界未必已加载。
+- **钩子是异步的，带 `CancellationToken`**。取消是协作式的：尊重令牌、尽快返回。`OnLoad` 被取消按装载回滚，`OnEnable` 被取消保持停用，`OnDisable` / `OnUnload` 被取消表示框架不再等待并记账。
 - **契约只覆盖通用宿主服务**：日志、配置、数据目录、调度、事件总线、服务解析。世界、实体、命令、游戏事件不在其中。
 - **卸载要真能回收**：不要留长期静态状态，不要裸起线程。事件订阅与定时器由框架在卸载时替你收回，但那只是兜底。
 - **停用会先关回调闸门**：框架在 `OnDisable` 之前停止投递事件与定时器；拒绝停用则恢复。已在执行的回调会跑完，服务与插件自有线程不受管（ADR-0035）。

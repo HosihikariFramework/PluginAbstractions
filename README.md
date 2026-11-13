@@ -11,7 +11,7 @@ The framework itself and the other packages live under
 ## Referencing it
 
 ```xml
-<PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[1.2.0]" ExcludeAssets="runtime" />
+<PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[3.0.0]" ExcludeAssets="runtime" />
 ```
 
 **`ExcludeAssets="runtime"` is not optional.** The contract lives in the **shared layer** — the
@@ -29,12 +29,19 @@ using Hosihikari;
 
 public sealed class MyPlugin : IPlugin
 {
-    public void OnLoad(IPluginContext context) =>
+    public ValueTask OnLoad(IPluginContext context, CancellationToken cancellationToken)
+    {
         context.Logger.LogInformation("loaded: {Dir}", context.PackageDirectory);
+        return ValueTask.CompletedTask;
+    }
 
-    public PluginHookResult OnEnable() => PluginHookResult.Allow();
-    public PluginHookResult OnDisable() => PluginHookResult.Allow();
-    public void OnUnload() { }
+    public ValueTask<PluginHookResult> OnEnable(CancellationToken cancellationToken) =>
+        ValueTask.FromResult(PluginHookResult.Allow());
+
+    public ValueTask<PluginHookResult> OnDisable(CancellationToken cancellationToken) =>
+        ValueTask.FromResult(PluginHookResult.Allow());
+
+    public ValueTask OnUnload(CancellationToken cancellationToken) => ValueTask.CompletedTask;
 }
 ```
 
@@ -56,7 +63,7 @@ A plugin package is a directory; the directory name is the plugin name, and it m
   "version": "1.0.0",
   "dependencies": [{ "name": "hosihikari" }],
   "extraInfo": {
-    "api_version": "2",
+    "api_version": "3",
     "manifest_version": "1",
     "loader": "assembly"
   }
@@ -74,22 +81,30 @@ Loader's business**. `api_version` and `manifest_version` must equal `PluginCont
 A loader can implement the optional `IPluginLoaderDiagnostics` companion interface. After
 `CanLoad` selects the loader and before `Load` runs, the manager calls
 `Validate(manifest, packageDirectory)`. A non-empty list becomes part of the load report and the
-package is skipped; an empty list lets the load continue.
+package is skipped; an empty list lets the load continue. Problems come back as `PluginDiagnostic`
+records — the same shape a hook refusal and `ReportFault` carry.
 
 ```csharp
-public IReadOnlyList<string> Validate(PluginManifest manifest, string packageDirectory)
+public IReadOnlyList<PluginDiagnostic> Validate(PluginManifest manifest, string packageDirectory)
 {
     var entryPath = Path.Combine(packageDirectory, manifest.EntryPath);
     return File.Exists(entryPath)
         ? []
-        : [$"entry not found: {manifest.EntryPath}"];
+        : [PluginDiagnostic.Error("entry-missing", $"entry not found: {manifest.EntryPath}")];
 }
 ```
+
+The loader itself is a plugin package with `kind: loader`. It receives `ILoaderContext` — the plugin
+context plus `RegisterLoader` — while ordinary plugins get the plain `IPluginContext`.
 
 ## Things an author should know
 
 - **Hooks promise order and idempotence only** — not which server phase they land in. The world may
   not be loaded yet when `OnEnable` runs.
+- **Hooks are async and take a `CancellationToken`.** Cancellation is cooperative: honour the token
+  and return quickly. A cancelled `OnLoad` rolls the load back, a cancelled `OnEnable` keeps the
+  plugin disabled, and a cancelled `OnDisable` / `OnUnload` means the framework stops waiting and
+  records it.
 - **The contract covers host services only**: logging, configuration, data directory, scheduling,
   the event bus, service resolution and the service registry. Worlds, entities, commands and game
   events are outside it.

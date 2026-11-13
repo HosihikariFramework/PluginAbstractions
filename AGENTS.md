@@ -25,7 +25,7 @@ For template changes, install the packed template, generate both languages, and 
 
 ## Invariants
 
-- The contract stays API version 2 and manifest version 1. The two versions have separate
+- The contract stays API version 3 and manifest version 1. The two versions have separate
   compatibility domains; bump only the one whose contract changed, and record the decision in an
   ADR.
 - Plugin projects reference the contract with `ExcludeAssets="runtime"`; the shared layer owns the

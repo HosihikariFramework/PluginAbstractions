@@ -9,6 +9,6 @@ public interface IPluginLoaderDiagnostics
     /// <summary>检查清单与包目录。返回空列表表示可以继续；只报告，不改变路由。</summary>
     /// <param name="manifest">包内清单。</param>
     /// <param name="packageDirectory">插件包目录。</param>
-    /// <returns>可读的问题清单；为空表示没有发现问题。</returns>
-    IReadOnlyList<string> Validate(PluginManifest manifest, string packageDirectory);
+    /// <returns>诊断清单（ADR-0059）；为空表示没有发现问题。</returns>
+    IReadOnlyList<PluginDiagnostic> Validate(PluginManifest manifest, string packageDirectory);
 }

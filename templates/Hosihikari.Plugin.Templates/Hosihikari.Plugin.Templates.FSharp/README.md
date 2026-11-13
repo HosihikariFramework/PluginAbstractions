@@ -29,10 +29,10 @@ name.
 ## Lifecycle
 
 `OnLoad` runs after dependencies are ready. `OnEnable` opens the event/timer gate; a refusal keeps
-the plugin loaded and disabled. `OnUnload` releases what the plugin owns. An exception from a hook
-is a fault and the host unloads the plugin.
+the plugin loaded and disabled. `OnUnload` releases what the plugin owns. All four hooks are async
+and take a `CancellationToken`. An exception from a hook is a fault and the host unloads the plugin.
 
 ## Licence
 
 The template scaffolding is MIT-0, see [LICENSE.md](LICENSE.md). The framework contract this
-project references (Abstractions 1.0.0) is MIT.
+project references (Abstractions 3.0.0) is MIT.
