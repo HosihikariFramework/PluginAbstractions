@@ -97,6 +97,12 @@ public IReadOnlyList<PluginDiagnostic> Validate(PluginManifest manifest, string 
 上下文只给 `Events` 与 `Logger`。组件每进程恰好一份，不随任何插件的停用或卸载变化；事件发布器与服务端线程
 `SynchronizationContext` 的安装是它的目标用户。
 
+## 状态迁移事件
+
+管理器在每次在场状态迁移时向全局总线发一条 `PluginStateChanged(Name, Previous, Current)`：卸载时是
+`Loaded` → `Detached`，重新装载时反向。它只描述在场，启用与否是另一条轴、不在这里报。记录住在共享层，
+跨 ALC 精确匹配，任何拿着总线订阅的地方都能看见卸载，而不必自己被卸载。
+
 ## 作者要知道的几条
 
 - **钩子只承诺顺序与幂等**，不承诺它们落在服务器的哪个阶段 —— `OnEnable` 时世界未必已加载。

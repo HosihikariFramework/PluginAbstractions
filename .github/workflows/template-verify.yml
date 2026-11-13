@@ -32,6 +32,7 @@ jobs:
       - name: 打包契约与模板
         run: |
           set -euo pipefail
+          dotnet pack Plugin.Abstractions/model/Hosihikari.Plugin.Model.csproj -c Release -o artifacts
           dotnet pack Plugin.Abstractions/src/Hosihikari.Plugin.Abstractions.csproj -c Release -o artifacts
           dotnet pack PluginManager/tools/Build/Hosihikari.Plugin.Build.csproj -c Release -o artifacts
           dotnet pack Plugin.Abstractions/templates/Hosihikari.Plugin.Templates/Hosihikari.Plugin.Templates.csproj -c Release -o artifacts
@@ -65,12 +66,20 @@ jobs:
             echo 'the shared contract leaked into the C# plugin package' >&2
             exit 1
           fi
+          if find dist/HelloTemplate -name 'Hosihikari.Plugin.Model.dll' | grep -q .; then
+            echo 'the shared manifest model leaked into the C# plugin package' >&2
+            exit 1
+          fi
           cd "$RUNNER_TEMP/HelloFSharp"
           bash ./pack.sh
           test -f dist/HelloFSharp/HelloFSharp.dll
           test -f dist/HelloFSharp/manifest.json
           if find dist/HelloFSharp -name 'Hosihikari.Plugin.Abstractions.dll' | grep -q .; then
             echo 'the shared contract leaked into the F# plugin package' >&2
+            exit 1
+          fi
+          if find dist/HelloFSharp -name 'Hosihikari.Plugin.Model.dll' | grep -q .; then
+            echo 'the shared manifest model leaked into the F# plugin package' >&2
             exit 1
           fi
 

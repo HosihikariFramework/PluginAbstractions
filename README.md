@@ -114,6 +114,14 @@ and `StopAsync(CancellationToken)`, both called on the server thread. The contex
 and `Logger` only. Components exist once per process and survive every plugin disable and unload;
 the event publisher and the server-thread `SynchronizationContext` install are the intended users.
 
+## Status events
+
+The manager publishes a `PluginStateChanged(Name, Previous, Current)` on the global bus for every
+presence transition — `Loaded` → `Detached` on unload, and back when the plugin is loaded again. It
+carries presence only; `Enabled` is the other axis and is not reported here. The record lives in the
+shared layer, so the type matches exactly across ALCs and anything holding a bus subscription can
+see unloads without being unloaded itself.
+
 ## Things an author should know
 
 - **Hooks promise order and idempotence only** — not which server phase they land in. The world may

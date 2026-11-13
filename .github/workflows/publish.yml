@@ -21,8 +21,11 @@ jobs:
           dotnet-version: '10.0.x'
 
       # 版本号的事实源是 csproj 里的 <Version>，标签只是触发器。
+      # 模型包与契约同版本发布：契约的 nuspec 依赖它，缺了契约包还原不出来。
       - name: 打包
-        run: dotnet pack src/Hosihikari.Plugin.Abstractions.csproj -c Release -o out
+        run: |
+          dotnet pack model/Hosihikari.Plugin.Model.csproj -c Release -o out
+          dotnet pack src/Hosihikari.Plugin.Abstractions.csproj -c Release -o out
 
       # 用 OIDC 令牌换一把临时 API key —— 仓库里不存任何长期密钥。
       # 换来的 key 只有一小时有效期、且一个令牌只能换一把，所以这一步紧贴推送。
