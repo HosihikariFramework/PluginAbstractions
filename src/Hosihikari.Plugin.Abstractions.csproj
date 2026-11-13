@@ -28,8 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- 清单模型与打包器共用（ADR-0059），所以是独立包；契约的签名还用到它，运行期必须跟来。 -->
-    <ProjectReference Include="../model/Hosihikari.Plugin.Model.csproj" />
+    <!-- 清单模型与打包器共用（ADR-0059），所以是独立包；契约的签名还用到它，编译引用必须能传递到加载器作者。
+         runtime 排除：模型随核心驻留共享层，插件包里不该再出现副本。 -->
+    <ProjectReference Include="../model/Hosihikari.Plugin.Model.csproj" ExcludeAssets="runtime" />
   </ItemGroup>
 
   <ItemGroup>
