@@ -45,7 +45,7 @@ public sealed class MyPlugin : IPlugin
 
 ## 清单
 
-插件包是一个目录，目录名就是插件名，里面必须有 `manifest.json`（格式沿用 LeviLamina 的 mod 清单，框架自己的字段住在 `extraInfo`）：
+插件包是一个目录，目录名就是插件名，里面必须有 `manifest.json`（格式沿用 LeviLamina 的 mod 清单，框架自己的字段住在 `extraInfo`）。清单模型类型住在 `Hosihikari.Plugin.Model` 包，契约引用它，管理器与打包器共用同一份：
 
 ```json
 {
@@ -83,6 +83,19 @@ public IReadOnlyList<PluginDiagnostic> Validate(PluginManifest manifest, string 
 
 加载器本身就是一个 `kind: loader` 的插件包，它拿到 `ILoaderContext` —— 插件上下文加上
 `RegisterLoader`；普通插件拿到的仍是 `IPluginContext`。
+
+## 事件优先级
+
+`Subscribe` 可以带一个 `EventPriority`：`Lowest`、`Low`、`Normal`（缺省）、`High`、`Highest` 与
+`Monitor`。处理器按 `Lowest` 到 `Highest` 的顺序执行，`Monitor` 最后；同一档内按订阅顺序。
+`Monitor` 是约定上的观察档：不改事件、不取消。优先级只排托管处理器之间的顺序，不改变与原生 mod 的相对顺序。
+
+## 载体组件
+
+载体包在清单的 `carrier.components` 下声明进程级托管组件。它们实现 `ICarrierComponent`：
+`StartAsync(ICarrierComponentContext, CancellationToken)` 与 `StopAsync(CancellationToken)`，都在服务端线程上调用，
+上下文只给 `Events` 与 `Logger`。组件每进程恰好一份，不随任何插件的停用或卸载变化；事件发布器与服务端线程
+`SynchronizationContext` 的安装是它的目标用户。
 
 ## 作者要知道的几条
 

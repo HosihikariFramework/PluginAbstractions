@@ -5,7 +5,8 @@ templates.
 
 ## Repository map
 
-- `src/` — `IPlugin`, contexts, manifest types, contract version, loader diagnostics.
+- `src/` — `IPlugin`, contexts, contract version, loader diagnostics, event priority, carrier components.
+- `model/` — `PluginManifest` and dependency types; shared with the manager and packer (ADR-0059).
 - `templates/Hosihikari.Plugin.Templates/` — C# and F# template sources and packaging project.
 - `.github/workflows/build.yml` — contract build.
 - `.github/workflows/template-verify.yml` — packs the contract and templates, installs them, and

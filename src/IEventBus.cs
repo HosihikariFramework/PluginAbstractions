@@ -3,6 +3,7 @@ namespace Hosihikari;
 /// <summary>
 /// 事件总线（ADR-0014）：在发布者线程上同步分发；单个 handler 抛异常被捕获、上报、不影响其余 handler。
 /// 载体事件（ADR-0007 并入）也是原样透传，插件不必分场合记两套语义。
+/// 订阅可带优先级（ADR-0060），分发按档从低到高、<see cref="EventPriority.Monitor"/> 最后；同档按订阅顺序。
 /// </summary>
 public interface IEventBus
 {
@@ -10,8 +11,12 @@ public interface IEventBus
     /// 订阅。返回的句柄用来退订 —— 忘了退订也不会锁死插件，框架在卸载时替你退（ADR-0007）。
     /// </summary>
     /// <param name="handler">收到事件时调用。抛出的异常会被捕获并上报，不会中断本次分发。</param>
+    /// <param name="priority">
+    /// 本订阅的档位，缺省 <see cref="EventPriority.Normal"/>。用 <see cref="EventPriority.Monitor"/> 时
+    /// 约定只读：不修改事件对象、不取消。
+    /// </param>
     /// <returns>退订句柄。可重复释放。</returns>
-    IDisposable Subscribe<TEvent>(Action<TEvent> handler);
+    IDisposable Subscribe<TEvent>(Action<TEvent> handler, EventPriority priority = EventPriority.Normal);
 
     /// <summary>在调用者的线程上同步分发给所有订阅者。</summary>
     /// <param name="event">

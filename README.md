@@ -53,7 +53,8 @@ parameterless constructor" are enforced by the compiler.
 
 A plugin package is a directory; the directory name is the plugin name, and it must contain a
 `manifest.json` (the format is LeviLamina's mod manifest; the framework's own fields live under
-`extraInfo`):
+`extraInfo`). The model types live in the `Hosihikari.Plugin.Model` package, which the contract
+references and the manager and packer share:
 
 ```json
 {
@@ -96,6 +97,22 @@ public IReadOnlyList<PluginDiagnostic> Validate(PluginManifest manifest, string 
 
 The loader itself is a plugin package with `kind: loader`. It receives `ILoaderContext` — the plugin
 context plus `RegisterLoader` — while ordinary plugins get the plain `IPluginContext`.
+
+## Event priority
+
+`Subscribe` takes an optional `EventPriority`: `Lowest`, `Low`, `Normal` (the default), `High`,
+`Highest` and `Monitor`. Handlers run from `Lowest` to `Highest`, with `Monitor` last; handlers in
+the same band run in subscription order. `Monitor` is an observation band by convention only —
+don't mutate the event and don't cancel it. Priority orders managed handlers among themselves; it
+does not change the order relative to native mods.
+
+## Carrier components
+
+A carrier package declares process-wide managed components under `carrier.components` in its
+manifest. They implement `ICarrierComponent`: `StartAsync(ICarrierComponentContext, CancellationToken)`
+and `StopAsync(CancellationToken)`, both called on the server thread. The context carries `Events`
+and `Logger` only. Components exist once per process and survive every plugin disable and unload;
+the event publisher and the server-thread `SynchronizationContext` install are the intended users.
 
 ## Things an author should know
 

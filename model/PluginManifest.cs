@@ -5,6 +5,7 @@ namespace Hosihikari;
 
 /// <summary>
 /// 插件清单（ADR-0006）。格式取 LeviLamina 的 <c>manifest.json</c>，我们自己的字段住在 <c>extraInfo</c>。
+/// 模型住在这里而不是契约程序集（ADR-0059），管理器与打包器共用同一份；契约引用本程序集。
 /// </summary>
 public sealed class PluginManifest
 {
@@ -16,7 +17,7 @@ public sealed class PluginManifest
     public string EntryPath { get; set; } = "";
 
     /// <summary>
-    /// 父级的路由键，恒为 <see cref="PluginContractInfo.ParentName"/> —— 父级靠它把包交给我们（ADR-0006）。
+    /// 父级的路由键，恒为 <c>hosihikari</c>（<c>PluginContractInfo.ParentName</c>）—— 父级靠它把包交给我们（ADR-0006）。
     /// </summary>
     [JsonPropertyName("type")]
     public string ParentName { get; set; } = "";

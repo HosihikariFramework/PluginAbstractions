@@ -28,6 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- 清单模型与打包器共用（ADR-0059），所以是独立包；契约的签名还用到它，运行期必须跟来。 -->
+    <ProjectReference Include="../model/Hosihikari.Plugin.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- 只引抽象包（ADR-0007）：实现包留在 PluginManager，契约因此能驻留共享层。 -->
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.15" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.15" />

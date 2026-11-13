@@ -16,12 +16,14 @@ public static class PluginContractInfo
     public const string ParentName = "hosihikari";
 
     /// <summary>
-    /// 共享层的基地清单：契约与它的抽象包。载体声明的绑定程序集在载体包清单里，由管理器并到这份基地清单之后
-    /// （ADR-0059 / 0061），所以这里没有静态可变状态。文件名同时用于加载期的身份判定与打包期的副本剔除。
+    /// 共享层的基地清单：契约、清单模型与契约引用的抽象包。载体声明的绑定程序集在载体包清单里，
+    /// 由管理器并到这份基地清单之后（ADR-0059 / 0061），所以这里没有静态可变状态。
+    /// 文件名同时用于加载期的身份判定与打包期的副本剔除。
     /// </summary>
     public static readonly string[] BaseSharedAssemblyFileNames =
     [
         "Hosihikari.Plugin.Abstractions.dll",
+        "Hosihikari.Plugin.Model.dll",
         "Microsoft.Extensions.Configuration.Abstractions.dll",
         "Microsoft.Extensions.Logging.Abstractions.dll",
         "Microsoft.Extensions.DependencyInjection.Abstractions.dll",
