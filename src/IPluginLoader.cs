@@ -45,17 +45,55 @@ public abstract class PluginHandle(IPlugin plugin)
     public abstract Task<bool> WaitForUnloadAsync(CancellationToken cancellationToken = default);
 }
 
+/// <summary>一次卸载的失败发生在哪一段（ADR-0063）。钩子超时单独成类：它已经放下实例，只是没等钩子跑完。</summary>
+public enum UnloadFailure
+{
+    /// <summary>没有失败。</summary>
+    None,
+
+    /// <summary>钩子的取消立了功：它被取消，或者干脆没在预算内返回。闸门与记账已按停用处理。</summary>
+    HookTimedOut,
+
+    /// <summary>钩子明确拒绝（<see cref="PluginHookResult.Allowed"/> 为假）；插件仍在册、可能活跃。</summary>
+    HookRefused,
+
+    /// <summary>钩子抛出了异常；按故障继续卸载。</summary>
+    HookThrew,
+
+    /// <summary>回收验证没在预算内通过；插件已放下，留在待回收，再卸一次会重新验证。</summary>
+    ReclamationTimedOut,
+
+    /// <summary>钩子超时之后回收验证也超时。</summary>
+    HookAndReclamationTimedOut,
+
+    /// <summary>回收验证做完了，结论是没回收掉。</summary>
+    ReclamationFailed,
+}
+
 /// <summary>一次卸载的结果。失败要如实回传，不假装成功（ADR-0004 / ADR-0009）。</summary>
 /// <param name="Released">
 /// 是否真的回收掉了。失败可能是未加载、仍有依赖者、停用被拒绝（插件仍在册且可能活跃），
 /// 也可能是已经放下但回收验证没通过（状态 Detached，再调一次卸载会重新验证）。
 /// </param>
 /// <param name="Error">失败原因；成功时为 <see langword="null"/>。</param>
-public readonly record struct UnloadResult(bool Released, string? Error)
+/// <param name="Failure">失败落在哪一段（ADR-0063）；成功时为 <see cref="UnloadFailure.None"/>。</param>
+/// <param name="HookTimedOut">
+/// 钩子那一段是否被放弃过。它与 <see cref="Released"/> 正交：钩子超时之后回收验证仍可能通过，
+/// 那时 <see cref="Released"/> 为真而这里也为真。
+/// </param>
+public readonly record struct UnloadResult(
+    bool Released,
+    string? Error,
+    UnloadFailure Failure = UnloadFailure.None,
+    bool HookTimedOut = false)
 {
     /// <summary>成功：句柄已释放且回收已验证。</summary>
-    public static UnloadResult Ok() => new(true, null);
+    /// <param name="hookTimedOut">钩子那一段是否超时被放弃过。</param>
+    public static UnloadResult Ok(bool hookTimedOut = false) => new(true, null, UnloadFailure.None, hookTimedOut);
 
-    /// <summary>失败：如实带上原因。</summary>
-    public static UnloadResult Failed(string error) => new(false, error);
+    /// <summary>失败：如实带上原因与失败的那一段。</summary>
+    /// <param name="error">可读原因。</param>
+    /// <param name="failure">失败发生在哪一段。</param>
+    public static UnloadResult Failed(string error, UnloadFailure failure = UnloadFailure.ReclamationFailed) =>
+        new(false, error, failure);
 }

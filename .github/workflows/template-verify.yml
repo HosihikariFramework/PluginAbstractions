@@ -18,14 +18,14 @@ jobs:
         with:
           repository: HosihikariFramework/PluginManager
           path: PluginManager
-          # 两边用同名分支：跨仓改动要在同一个分支名上一起验。
+          # 跨仓并列检出必须钉同名分支（ADR-0059）；合并顺序固定为契约 → 核心 → 加载器，
+          # 否则同批改动里的另一方还停在默认分支上。
           ref: ${{ github.head_ref || github.ref_name }}
 
       - uses: actions/checkout@v7
         with:
           repository: HosihikariFramework/DotNetCorePlugins
           path: DotNetCorePlugins
-          # 两边用同名分支：跨仓改动要在同一个分支名上一起验。
           ref: ${{ github.head_ref || github.ref_name }}
 
       - uses: actions/setup-dotnet@v6

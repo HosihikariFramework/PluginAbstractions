@@ -10,19 +10,19 @@ namespace Hosihikari;
 public enum EventPriority
 {
     /// <summary>最先收到。</summary>
-    Lowest,
+    Lowest = -2,
 
     /// <summary>早于默认档。</summary>
-    Low,
+    Low = -1,
 
     /// <summary>默认档。</summary>
-    Normal,
+    Normal = 0,
 
     /// <summary>晚于默认档。</summary>
-    High,
+    High = 1,
 
     /// <summary>最后一批可改动的处理器。</summary>
-    Highest,
+    Highest = 2,
 
     /// <summary>
     /// 只读观察档，在所有其它档之后收到。**约定上不得修改事件对象、不得取消**；
