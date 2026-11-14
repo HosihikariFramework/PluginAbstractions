@@ -1,4 +1,4 @@
-name: template-verify
+﻿name: template-verify
 
 on:
   push:
@@ -18,11 +18,15 @@ jobs:
         with:
           repository: HosihikariFramework/PluginManager
           path: PluginManager
+          # 两边用同名分支：跨仓改动要在同一个分支名上一起验。
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - uses: actions/checkout@v7
         with:
           repository: HosihikariFramework/DotNetCorePlugins
           path: DotNetCorePlugins
+          # 两边用同名分支：跨仓改动要在同一个分支名上一起验。
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - uses: actions/setup-dotnet@v6
         with:
@@ -60,8 +64,9 @@ jobs:
           cd "$RUNNER_TEMP/HelloTemplate"
           bash ./pack.sh
           test -f dist/HelloTemplate/HelloTemplate.dll
-          test -f dist/HelloTemplate/manifest.json
-          grep -q '"hosihikari"' dist/HelloTemplate/manifest.json
+          test -f dist/HelloTemplate/hosihikari.json
+          grep -q '"type": "hosihikari"' dist/HelloTemplate/manifest.json
+          grep -q '"apiVersion": 3' dist/HelloTemplate/hosihikari.json
           if find dist/HelloTemplate -name 'Hosihikari.Plugin.Abstractions.dll' | grep -q .; then
             echo 'the shared contract leaked into the C# plugin package' >&2
             exit 1
@@ -73,7 +78,9 @@ jobs:
           cd "$RUNNER_TEMP/HelloFSharp"
           bash ./pack.sh
           test -f dist/HelloFSharp/HelloFSharp.dll
-          test -f dist/HelloFSharp/manifest.json
+          test -f dist/HelloFSharp/hosihikari.json
+          grep -q '"type": "hosihikari"' dist/HelloFSharp/manifest.json
+          grep -q '"apiVersion": 3' dist/HelloFSharp/hosihikari.json
           if find dist/HelloFSharp -name 'Hosihikari.Plugin.Abstractions.dll' | grep -q .; then
             echo 'the shared contract leaked into the F# plugin package' >&2
             exit 1

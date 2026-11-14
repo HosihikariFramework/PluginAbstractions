@@ -1,16 +1,16 @@
-namespace Hosihikari;
+﻿namespace Hosihikari;
 
-/// <summary>契约自身的版本（ADR-0012）。清单 <c>extraInfo.api_version</c> 必须等于它，否则拒载。</summary>
+/// <summary>契约自身的版本（ADR-0012）。清单 <c>apiVersion</c> 必须等于它，否则拒载。</summary>
 public static class PluginContractInfo
 {
-    /// <summary>当前的契约主版本。清单里的 <c>api_version</c> 与它不匹配的包在载入之前就会被剔除。</summary>
+    /// <summary>当前的契约主版本。清单里的 <c>apiVersion</c> 与它不匹配的包在载入之前就会被剔除。</summary>
     public const string CurrentApiVersion = "3";
 
-    /// <summary>当前的清单 schema 版本。清单里的 <c>manifest_version</c> 与它不匹配的包同样在载入之前被剔除。</summary>
+    /// <summary>当前的清单 schema 版本。清单里的 <c>schemaVersion</c> 与它不匹配的包同样在载入之前被剔除。</summary>
     public const string CurrentManifestVersion = "1";
 
     /// <summary>
-    /// 父级路由键的取值，也是清单顶层 <c>type</c> 该写的值（ADR-0006）。
+    /// 父级路由键的取值，也是信封 <c>manifest.json</c> 顶层 <c>type</c> 的取值（ADR-0006 / 0058）。
     /// 它是父级命名空间里的一等名字：插件靠 <c>dependencies</c> 声明对它的依赖来保证排序。
     /// </summary>
     public const string ParentName = "hosihikari";
@@ -56,6 +56,11 @@ public readonly record struct PluginHookResult(bool Allowed, PluginDiagnostic? D
 /// <summary>
 /// 插件作者实现的契约（ADR-0008）。钩子只承诺顺序与幂等，不承诺与 BDS 阶段的对应（ADR-0013）。
 /// 钩子异步并接收取消令牌（ADR-0059），取消是协作式的：插件应尽快尊重令牌返回。
+///
+/// 钩子跑在**线程池**线程上，没有 <c>SynchronizationContext</c>：在服务端线程上用
+/// <c>GetAwaiter().GetResult()</c> 等挂在服务端线程的 <c>Task.Delay</c> / <c>Task.Yield</c> 会死锁，
+/// 所以框架一律把钩子投到线程池再阻塞等待。插件内部照常 <c>await</c> 即可；要操作只在服务端线程
+/// 成立的东西，自己回到载体的上下文里（ADR-0061）。
 /// </summary>
 public interface IPlugin
 {
@@ -63,7 +68,6 @@ public interface IPlugin
     /// <param name="context">框架交给插件的一切。</param>
     /// <param name="cancellationToken">取消装载。</param>
     ValueTask OnLoad(IPluginContext context, CancellationToken cancellationToken);
-
     /// <summary>
     /// 启用：可以接活了。成功后打开作用域闸门；拒绝时留在册、未启用（ADR-0030 / 0035）。
     /// 取消时保持停用。
