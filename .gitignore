@@ -3,3 +3,6 @@ obj/
 .vs/
 .codegraph/
 artifacts/
+
+# 本机调试用的本地包源路径，不能进仓库
+nuget.config
