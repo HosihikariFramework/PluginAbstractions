@@ -91,9 +91,13 @@ public readonly record struct UnloadResult(
     /// <param name="hookTimedOut">钩子那一段是否超时被放弃过。</param>
     public static UnloadResult Ok(bool hookTimedOut = false) => new(true, null, UnloadFailure.None, hookTimedOut);
 
-    /// <summary>失败：如实带上原因与失败的那一段。</summary>
+    /// <summary>失败：如实带上原因、失败的那一段，以及钩子那一段是否超时过。</summary>
     /// <param name="error">可读原因。</param>
     /// <param name="failure">失败发生在哪一段。</param>
-    public static UnloadResult Failed(string error, UnloadFailure failure = UnloadFailure.ReclamationFailed) =>
-        new(false, error, failure);
+    /// <param name="hookTimedOut">钩子那一段是否超时被放弃过。</param>
+    public static UnloadResult Failed(
+        string error,
+        UnloadFailure failure = UnloadFailure.ReclamationFailed,
+        bool hookTimedOut = false) =>
+        new(false, error, failure, hookTimedOut);
 }
