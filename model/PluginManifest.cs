@@ -154,8 +154,24 @@ public sealed class ManifestCarrier
         set => _components = value ?? [];
     }
 
+    /// <summary>载体服务配置器（ADR-0064）：容器建成之前由它注册载体自己的服务。</summary>
+    [JsonPropertyName("bootstrap")]
+    public ManifestBootstrap? Bootstrap { get; set; }
+
     private List<string> _sharedAssemblies = [];
     private List<ManifestCarrierComponent> _components = [];
+}
+
+/// <summary>载体包的服务配置器：程序集文件名 + 类型全名（ADR-0064）。</summary>
+public sealed class ManifestBootstrap
+{
+    /// <summary>配置器所在的程序集文件名，必须在包内。</summary>
+    [JsonPropertyName("assembly")]
+    public string Assembly { get; set; } = "";
+
+    /// <summary>实现 <c>ICarrierServicesConfigurator</c> 的类型全名。</summary>
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = "";
 }
 
 /// <summary>一个载体组件：程序集文件名 + 类型全名。</summary>
