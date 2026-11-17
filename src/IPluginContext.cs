@@ -41,19 +41,9 @@ public interface IPluginContext
     IServiceProvider CarrierServices { get; }
 
     /// <summary>
-    /// 把一个加载器登记给管理器（ADR-0002）。加载器本身就是一个插件包，装载时用它把自己
-    /// 交出去；**此后**装载的包才会被路由到它 —— 所以需要它的插件要在清单里声明依赖它（ADR-0006）。
-    ///
-    /// 登记之后不能撤销：它造出来的实例的类型住在它的装载上下文里。
-    /// </summary>
-    /// <param name="loader">要接管的插件种类。</param>
-    /// <returns>登记成功为 <see langword="true"/>；同 id 已存在为 <see langword="false"/>。</returns>
-    bool RegisterLoader(IPluginLoader loader);
-
-    /// <summary>
     /// 报告一个在钩子之外发生的故障（进程外环境死亡、协议错误等，ADR-0030）。
     /// 宿主按故障处理：卸载该插件，成功后通知载体。进程内加载器通常用不到。
     /// </summary>
-    /// <param name="reason">可读的原因，进日志与父级的账。</param>
-    void ReportFault(string reason);
+    /// <param name="diagnostic">诊断（ADR-0059），进日志与父级的账。</param>
+    void ReportFault(PluginDiagnostic diagnostic);
 }

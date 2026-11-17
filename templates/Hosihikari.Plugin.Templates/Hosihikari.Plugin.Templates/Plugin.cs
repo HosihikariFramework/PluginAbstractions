@@ -8,19 +8,20 @@ namespace Hosihikari.Plugin.Templates;
 /// <summary>A precompiled plugin loaded by the core's built-in assembly loader.</summary>
 public sealed class Plugin : IPlugin
 {
-    public void OnLoad(IPluginContext context)
+    public ValueTask OnLoad(IPluginContext context, CancellationToken cancellationToken)
     {
         context.Logger.LogInformation(
             "{Name} loaded from {Directory}",
             context.Name,
             context.PackageDirectory);
+        return ValueTask.CompletedTask;
     }
 
-    public PluginHookResult OnEnable() => PluginHookResult.Allow();
+    public ValueTask<PluginHookResult> OnEnable(CancellationToken cancellationToken) =>
+        ValueTask.FromResult(PluginHookResult.Allow());
 
-    public PluginHookResult OnDisable() => PluginHookResult.Allow();
+    public ValueTask<PluginHookResult> OnDisable(CancellationToken cancellationToken) =>
+        ValueTask.FromResult(PluginHookResult.Allow());
 
-    public void OnUnload()
-    {
-    }
+    public ValueTask OnUnload(CancellationToken cancellationToken) => ValueTask.CompletedTask;
 }

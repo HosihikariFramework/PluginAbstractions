@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>BadTpl</AssemblyName>
+    <RootNamespace>BadTpl</RootNamespace>
+    <!-- 生成的清单要声明所引用的契约主版本；缺省值已经是 3，这里仍显式写出。 -->
+    <HosihikariPluginApiVersion>3</HosihikariPluginApiVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 契约住在共享层，插件包里不该有第二份身份。 -->
+    <PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[3.0.0]" ExcludeAssets="runtime" />
+    <!-- 打包目标；只在打包期起作用，不进插件包。 -->
+    <PackageReference Include="Hosihikari.Plugin.Build" Version="[1.2.0]" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

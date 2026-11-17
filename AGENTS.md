@@ -5,7 +5,8 @@ templates.
 
 ## Repository map
 
-- `src/` — `IPlugin`, contexts, manifest types, contract version, loader diagnostics.
+- `src/` — `IPlugin`, contexts, contract version, loader diagnostics, event priority, carrier components.
+- `model/` — `PluginManifest` and dependency types; shared with the manager and packer (ADR-0059).
 - `templates/Hosihikari.Plugin.Templates/` — C# and F# template sources and packaging project.
 - `.github/workflows/build.yml` — contract build.
 - `.github/workflows/template-verify.yml` — packs the contract and templates, installs them, and
@@ -25,7 +26,7 @@ For template changes, install the packed template, generate both languages, and 
 
 ## Invariants
 
-- The contract stays API version 2 and manifest version 1. The two versions have separate
+- The contract stays API version 3 and manifest version 1. The two versions have separate
   compatibility domains; bump only the one whose contract changed, and record the decision in an
   ADR.
 - Plugin projects reference the contract with `ExcludeAssets="runtime"`; the shared layer owns the
