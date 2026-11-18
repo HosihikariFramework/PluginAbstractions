@@ -112,7 +112,8 @@ A carrier package declares process-wide managed components under `carrier.compon
 manifest. They implement `ICarrierComponent`: `StartAsync(ICarrierComponentContext, CancellationToken)`
 and `StopAsync(CancellationToken)`, both called on the server thread. The context carries `Events`,
 `Logger`, and `CarrierServices` — the provider the carrier package fills in through
-`carrier.bootstrap` (an `ICarrierServicesConfigurator`), with key types owned by the carrier package.
+`carrier.bootstrap` (an `ICarrierServicesConfigurator`, which receives the container, the carrier
+package directory, and the native host handle), with key types owned by the carrier package.
 Components exist once per process and survive every plugin disable and unload; the event publisher
 and the server-thread `SynchronizationContext` install are the intended users.
 
