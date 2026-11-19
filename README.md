@@ -53,7 +53,7 @@ parameterless constructor" are enforced by the compiler.
 
 A plugin package is a directory; the directory name is the plugin name, and it must contain a
 `manifest.json` (the format is LeviLamina's mod manifest; the framework's own fields live under
-`extraInfo`). The model types live in the `Hosihikari.Plugin.Model` package, which the contract
+`extraInfo`). The model types live in the `Hosihikari.Plugin.Models` package, which the contract
 references and the manager and packer share:
 
 ```json

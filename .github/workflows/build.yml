@@ -17,5 +17,5 @@ jobs:
 
       - name: 构建
         run: |
-          dotnet build model/Hosihikari.Plugin.Model.csproj -c Release
+          dotnet build model/Hosihikari.Plugin.Models.csproj -c Release
           dotnet build src/Hosihikari.Plugin.Abstractions.csproj -c Release

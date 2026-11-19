@@ -1,4 +1,4 @@
-# Hosihikari.Plugin.Model
+# Hosihikari.Plugin.Models
 
 The plugin manifest model: `PluginManifest` and its dependency types.
 
