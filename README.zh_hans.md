@@ -45,7 +45,7 @@ public sealed class MyPlugin : IPlugin
 
 ## 清单
 
-插件包是一个目录，目录名就是插件名，里面必须有 `manifest.json`（格式沿用 LeviLamina 的 mod 清单，框架自己的字段住在 `extraInfo`）。清单模型类型住在 `Hosihikari.Plugin.Model` 包，契约引用它，管理器与打包器共用同一份：
+插件包是一个目录，目录名就是插件名，里面必须有 `manifest.json`（格式沿用 LeviLamina 的 mod 清单，框架自己的字段住在 `extraInfo`）。清单模型类型住在 `Hosihikari.Plugin.Models` 包，契约引用它，管理器与打包器共用同一份：
 
 ```json
 {

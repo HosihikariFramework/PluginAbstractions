@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>Hosihikari.Plugin.Abstractions</PackageId>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Authors>HosihikariFramework</Authors>
     <Description>Plugin contract for the Hosihikari framework: IPlugin, IPluginContext, IPluginLoader, host services and the plugin manifest model.</Description>
     <!-- 0.7.0 was published under LGPL; 0.7.1 and later are MIT. -->
@@ -30,7 +30,7 @@
   <ItemGroup>
     <!-- 清单模型与打包器共用（ADR-0059），所以是独立包；契约的签名还用到它，编译引用必须能传递到加载器作者。
          runtime 排除：模型随核心驻留共享层，插件包里不该再出现副本。 -->
-    <ProjectReference Include="../model/Hosihikari.Plugin.Model.csproj" ExcludeAssets="runtime" />
+    <ProjectReference Include="../model/Hosihikari.Plugin.Models.csproj" ExcludeAssets="runtime" />
   </ItemGroup>
 
   <ItemGroup>

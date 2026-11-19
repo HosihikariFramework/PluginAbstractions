@@ -23,7 +23,7 @@ public static class PluginContractInfo
     public static readonly string[] BaseSharedAssemblyFileNames =
     [
         "Hosihikari.Plugin.Abstractions.dll",
-        "Hosihikari.Plugin.Model.dll",
+        "Hosihikari.Plugin.Models.dll",
         "Microsoft.Extensions.Configuration.Abstractions.dll",
         "Microsoft.Extensions.Logging.Abstractions.dll",
         "Microsoft.Extensions.DependencyInjection.Abstractions.dll",
