@@ -1,7 +1,7 @@
 namespace Hosihikari;
 
 /// <summary>
-/// 订阅优先级（ADR-0060）。分发按 <see cref="Lowest"/> → <see cref="Highest"/> 的顺序，
+/// 订阅优先级（FX-0060）。分发按 <see cref="Lowest"/> → <see cref="Highest"/> 的顺序，
 /// <see cref="Monitor"/> 永远最后；同一档内按订阅顺序。
 ///
 /// 优先级只决定托管处理器之间的相对顺序：载体侧对每个原生事件只注册固定优先级的一个原生监听器，

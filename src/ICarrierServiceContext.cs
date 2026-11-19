@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Hosihikari;
 
 /// <summary>
-/// 配置器拿到的输入（ADR-0064）：容器、载体包目录与原生宿主句柄。
+/// 配置器拿到的输入（FX-0064）：容器、载体包目录与原生宿主句柄。
 /// 目录让配置器能装包内的原生库（垫片）而不必猜进程状态；句柄交由载体包自己解释。
 /// </summary>
 public interface ICarrierServiceContext

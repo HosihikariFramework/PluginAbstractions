@@ -1,6 +1,6 @@
 namespace Hosihikari;
 
-/// <summary>诊断的严重级别（ADR-0059）。日志与 UI 按它决定呈现。</summary>
+/// <summary>诊断的严重级别（FX-0059）。日志与 UI 按它决定呈现。</summary>
 public enum PluginDiagnosticSeverity
 {
     /// <summary>提示。</summary>
@@ -14,7 +14,7 @@ public enum PluginDiagnosticSeverity
 }
 
 /// <summary>
-/// 一条机器可读的诊断（ADR-0059）：钩子拒绝、加载器预检与故障上报共用这一种形状。
+/// 一条机器可读的诊断（FX-0059）：钩子拒绝、加载器预检与故障上报共用这一种形状。
 /// 跨语言绑定只序列化一种记录；绑定里的 <see cref="Exception"/> 只带消息与类型名，不带堆栈。
 /// </summary>
 /// <param name="Code">机器可读的错误码，由报告方定义。</param>

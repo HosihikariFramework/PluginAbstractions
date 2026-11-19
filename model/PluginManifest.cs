@@ -5,14 +5,14 @@ using System.Text.Json.Serialization;
 namespace Hosihikari;
 
 /// <summary>
-/// 插件清单 <c>hosihikari.json</c>（ADR-0058）。LeviLamina 路由用的 <c>manifest.json</c> 是打包器生成的信封。
-/// 模型住在这里而不是契约程序集（ADR-0059），管理器与打包器共用同一份；契约引用本程序集。
+/// 插件清单 <c>hosihikari.json</c>（FX-0058）。LeviLamina 路由用的 <c>manifest.json</c> 是打包器生成的信封。
+/// 模型住在这里而不是契约程序集（FX-0059），管理器与打包器共用同一份；契约引用本程序集。
 ///
 /// 1.x 的 <c>extraInfo</c> 读法暂时保留：旧格式解析器还在，值优先取新字段。
 /// </summary>
 public sealed class PluginManifest
 {
-    /// <summary>清单 schema 版本，从 1 起（ADR-0058）；取代 1.x 的 <c>extraInfo.manifest_version</c>。</summary>
+    /// <summary>清单 schema 版本，从 1 起（FX-0058）；取代 1.x 的 <c>extraInfo.manifest_version</c>。</summary>
     [JsonPropertyName("schemaVersion")]
     public int? SchemaVersion { get; set; }
 
@@ -26,15 +26,15 @@ public sealed class PluginManifest
     /// <summary>插件自身版本。</summary>
     public string? Version { get; set; }
 
-    /// <summary>处理这个包的加载器 id（ADR-0002）。不写就是 <c>assembly</c>。</summary>
+    /// <summary>处理这个包的加载器 id（FX-0002）。不写就是 <c>assembly</c>。</summary>
     [JsonPropertyName("loader")]
     public string? LoaderName { get; set; }
 
-    /// <summary>包类型（ADR-0006）：<c>plugin</c>（缺省）、<c>loader</c> 或 <c>carrier</c>。</summary>
+    /// <summary>包类型（FX-0006）：<c>plugin</c>（缺省）、<c>loader</c> 或 <c>carrier</c>。</summary>
     [JsonPropertyName("kind")]
     public string? Kind { get; set; }
 
-    /// <summary>插件依赖的契约主版本（ADR-0012）。</summary>
+    /// <summary>插件依赖的契约主版本（FX-0012）。</summary>
     [JsonPropertyName("apiVersion")]
     public int? ApiVersion { get; set; }
 
@@ -59,7 +59,7 @@ public sealed class PluginManifest
     [JsonPropertyName("type")]
     public string? ParentName { get; set; }
 
-    /// <summary>依赖的其它插件。加载按拓扑序、卸载按反序（ADR-0004）。</summary>
+    /// <summary>依赖的其它插件。加载按拓扑序、卸载按反序（FX-0004）。</summary>
     public List<ManifestDependency> Dependencies
     {
         get => _dependencies;
@@ -67,7 +67,7 @@ public sealed class PluginManifest
     }
 
     /// <summary>
-    /// 1.x 的扩展位，值保持原始 JSON。ADR-0058 之后只剩兼容读：新字段一律取顶层。
+    /// 1.x 的扩展位，值保持原始 JSON。FX-0058 之后只剩兼容读：新字段一律取顶层。
     /// </summary>
     public Dictionary<string, JsonElement> ExtraInfo
     {
@@ -78,7 +78,7 @@ public sealed class PluginManifest
     private List<ManifestDependency> _dependencies = [];
     private Dictionary<string, JsonElement> _extraInfo = [];
 
-    /// <summary>处理这个包的加载器 id（ADR-0002）。</summary>
+    /// <summary>处理这个包的加载器 id（FX-0002）。</summary>
     [JsonIgnore]
     public string Loader =>
         LoaderName ?? ExtraString("loader") ?? "assembly";
@@ -91,7 +91,7 @@ public sealed class PluginManifest
     [JsonIgnore]
     public int? EffectiveSchemaVersion => SchemaVersion ?? ExtraInt("manifest_version");
 
-    /// <summary>包类型（ADR-0006）：<c>plugin</c>（缺省）、<c>loader</c> 或 <c>carrier</c>。</summary>
+    /// <summary>包类型（FX-0006）：<c>plugin</c>（缺省）、<c>loader</c> 或 <c>carrier</c>。</summary>
     [JsonIgnore]
     public string PackageKind => Kind ?? ExtraString("packageKind") ?? "plugin";
 
@@ -113,10 +113,10 @@ public sealed class PluginManifest
             : null;
 }
 
-/// <summary>打包期设置（ADR-0058）。</summary>
+/// <summary>打包期设置（FX-0058）。</summary>
 public sealed class ManifestPack
 {
-    /// <summary>进程外插件的启动命令；字符串或字符串数组都收（ADR-0031）。</summary>
+    /// <summary>进程外插件的启动命令；字符串或字符串数组都收（FX-0031）。</summary>
     [JsonPropertyName("command")]
     public JsonElement? Command { get; set; }
 
@@ -128,14 +128,14 @@ public sealed class ManifestPack
         set => _packages = value ?? [];
     }
 
-    /// <summary>打包期在包目录里执行的准备命令；字符串或字符串数组都收（ADR-0031）。</summary>
+    /// <summary>打包期在包目录里执行的准备命令；字符串或字符串数组都收（FX-0031）。</summary>
     [JsonPropertyName("prepack")]
     public JsonElement? Prepack { get; set; }
 
     private List<string> _packages = [];
 }
 
-/// <summary>载体组（ADR-0061）：只有载体包声明，核心据此装配进程级组件。</summary>
+/// <summary>载体组（FX-0061）：只有载体包声明，核心据此装配进程级组件。</summary>
 public sealed class ManifestCarrier
 {
     /// <summary>载体带进共享层的程序集文件名。</summary>
@@ -154,7 +154,7 @@ public sealed class ManifestCarrier
         set => _components = value ?? [];
     }
 
-    /// <summary>载体服务配置器（ADR-0064）：容器建成之前由它注册载体自己的服务。</summary>
+    /// <summary>载体服务配置器（FX-0064）：容器建成之前由它注册载体自己的服务。</summary>
     [JsonPropertyName("bootstrap")]
     public ManifestBootstrap? Bootstrap { get; set; }
 
@@ -162,7 +162,7 @@ public sealed class ManifestCarrier
     private List<ManifestCarrierComponent> _components = [];
 }
 
-/// <summary>载体包的服务配置器：程序集文件名 + 类型全名（ADR-0064）。</summary>
+/// <summary>载体包的服务配置器：程序集文件名 + 类型全名（FX-0064）。</summary>
 public sealed class ManifestBootstrap
 {
     /// <summary>配置器所在的程序集文件名，必须在包内。</summary>

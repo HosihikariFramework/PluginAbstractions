@@ -1,6 +1,6 @@
 namespace Hosihikari;
 
-/// <summary>某一插件种类的加载器（ADR-0002）。管理器只认这个契约，不认识 ALC 与脚本引擎（ADR-0010）。</summary>
+/// <summary>某一插件种类的加载器（FX-0002）。管理器只认这个契约，不认识 ALC 与脚本引擎（FX-0010）。</summary>
 public interface IPluginLoader
 {
     /// <summary>清单 <c>extraInfo.loader</c> 的取值。</summary>
@@ -11,7 +11,7 @@ public interface IPluginLoader
     /// <returns>能处理返回 <see langword="true"/>。</returns>
     bool CanLoad(PluginManifest manifest);
 
-    /// <summary>把插件包变成可运行的实例。失败返回 <see langword="null"/>，不抛（ADR-0009）。</summary>
+    /// <summary>把插件包变成可运行的实例。失败返回 <see langword="null"/>，不抛（FX-0009）。</summary>
     /// <param name="manifest">包内清单。</param>
     /// <param name="packageDirectory">插件包目录。</param>
     /// <param name="context">交给插件的上下文。</param>
@@ -19,12 +19,12 @@ public interface IPluginLoader
     PluginHandle? Load(PluginManifest manifest, string packageDirectory, IPluginContext context);
 }
 
-/// <summary>加载器交出的插件实例与卸载能力。逻辑停用与真正卸载是两件事（ADR-0010）。</summary>
+/// <summary>加载器交出的插件实例与卸载能力。逻辑停用与真正卸载是两件事（FX-0010）。</summary>
 public abstract class PluginHandle(IPlugin plugin)
 {
     /// <summary>
     /// 插件实例。卸载开始后置为 <see langword="null"/>，句柄本身不再强引用插件与它的搬运单元，
-    /// 回收验证才有可能通过（ADR-0023）。
+    /// 回收验证才有可能通过（FX-0023）。
     /// </summary>
     public IPlugin? Plugin { get; protected set; } = plugin;
 
@@ -45,7 +45,7 @@ public abstract class PluginHandle(IPlugin plugin)
     public abstract Task<bool> WaitForUnloadAsync(CancellationToken cancellationToken = default);
 }
 
-/// <summary>一次卸载的失败发生在哪一段（ADR-0063）。钩子超时单独成类：它已经放下实例，只是没等钩子跑完。</summary>
+/// <summary>一次卸载的失败发生在哪一段（FX-0063）。钩子超时单独成类：它已经放下实例，只是没等钩子跑完。</summary>
 public enum UnloadFailure
 {
     /// <summary>没有失败。</summary>
@@ -70,13 +70,13 @@ public enum UnloadFailure
     ReclamationFailed,
 }
 
-/// <summary>一次卸载的结果。失败要如实回传，不假装成功（ADR-0004 / ADR-0009）。</summary>
+/// <summary>一次卸载的结果。失败要如实回传，不假装成功（FX-0004 / FX-0009）。</summary>
 /// <param name="Released">
 /// 是否真的回收掉了。失败可能是未加载、仍有依赖者、停用被拒绝（插件仍在册且可能活跃），
 /// 也可能是已经放下但回收验证没通过（状态 Detached，再调一次卸载会重新验证）。
 /// </param>
 /// <param name="Error">失败原因；成功时为 <see langword="null"/>。</param>
-/// <param name="Failure">失败落在哪一段（ADR-0063）；成功时为 <see cref="UnloadFailure.None"/>。</param>
+/// <param name="Failure">失败落在哪一段（FX-0063）；成功时为 <see cref="UnloadFailure.None"/>。</param>
 /// <param name="HookTimedOut">
 /// 钩子那一段是否被放弃过。它与 <see cref="Released"/> 正交：钩子超时之后回收验证仍可能通过，
 /// 那时 <see cref="Released"/> 为真而这里也为真。
