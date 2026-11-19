@@ -1,14 +1,14 @@
 namespace Hosihikari;
 
 /// <summary>
-/// 事件总线（ADR-0014）：在发布者线程上同步分发；单个 handler 抛异常被捕获、上报、不影响其余 handler。
-/// 载体事件（ADR-0007 并入）也是原样透传，插件不必分场合记两套语义。
-/// 订阅可带优先级（ADR-0060），分发按档从低到高、<see cref="EventPriority.Monitor"/> 最后；同档按订阅顺序。
+/// 事件总线（FX-0014）：在发布者线程上同步分发；单个 handler 抛异常被捕获、上报、不影响其余 handler。
+/// 载体事件（FX-0007 并入）也是原样透传，插件不必分场合记两套语义。
+/// 订阅可带优先级（FX-0060），分发按档从低到高、<see cref="EventPriority.Monitor"/> 最后；同档按订阅顺序。
 /// </summary>
 public interface IEventBus
 {
     /// <summary>
-    /// 订阅。返回的句柄用来退订 —— 忘了退订也不会锁死插件，框架在卸载时替你退（ADR-0007）。
+    /// 订阅。返回的句柄用来退订 —— 忘了退订也不会锁死插件，框架在卸载时替你退（FX-0007）。
     /// </summary>
     /// <param name="handler">收到事件时调用。抛出的异常会被捕获并上报，不会中断本次分发。</param>
     /// <param name="priority">
@@ -27,8 +27,8 @@ public interface IEventBus
 }
 
 /// <summary>
-/// 调度器（ADR-0007）。<c>ScheduleOnce</c> / <c>SchedulePeriodic</c> 跑在线程池上；
-/// "在游戏主线程上跑"是载体能力，自持态拿不到（ADR-0013 / ADR-0019）。
+/// 调度器（FX-0007）。<c>ScheduleOnce</c> / <c>SchedulePeriodic</c> 跑在线程池上；
+/// "在游戏主线程上跑"是载体能力，自持态拿不到（FX-0013 / FX-0019）。
 /// </summary>
 public interface IScheduler
 {

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 namespace Hosihikari;
 
 /// <summary>
-/// 载体组件拿到的上下文（ADR-0061）：框架交给组件的输入面，方向与 ADR-0007 的宿主服务相反
+/// 载体组件拿到的上下文（FX-0061）：框架交给组件的输入面，方向与 FX-0007 的宿主服务相反
 /// （那边是框架给插件，这边是框架给组件）。给总线、日志与载体服务，不给插件面。
 /// </summary>
 public interface ICarrierComponentContext

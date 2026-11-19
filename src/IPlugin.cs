@@ -1,6 +1,6 @@
 ﻿namespace Hosihikari;
 
-/// <summary>契约自身的版本（ADR-0012）。清单 <c>apiVersion</c> 必须等于它，否则拒载。</summary>
+/// <summary>契约自身的版本（FX-0012）。清单 <c>apiVersion</c> 必须等于它，否则拒载。</summary>
 public static class PluginContractInfo
 {
     /// <summary>当前的契约主版本。清单里的 <c>apiVersion</c> 与它不匹配的包在载入之前就会被剔除。</summary>
@@ -10,14 +10,14 @@ public static class PluginContractInfo
     public const string CurrentManifestVersion = "1";
 
     /// <summary>
-    /// 父级路由键的取值，也是信封 <c>manifest.json</c> 顶层 <c>type</c> 的取值（ADR-0006 / 0058）。
+    /// 父级路由键的取值，也是信封 <c>manifest.json</c> 顶层 <c>type</c> 的取值（FX-0006 / 0058）。
     /// 它是父级命名空间里的一等名字：插件靠 <c>dependencies</c> 声明对它的依赖来保证排序。
     /// </summary>
     public const string ParentName = "hosihikari";
 
     /// <summary>
     /// 共享层的基地清单：契约、清单模型与契约引用的抽象包。载体声明的绑定程序集在载体包清单里，
-    /// 由管理器并到这份基地清单之后（ADR-0059 / 0061），所以这里没有静态可变状态。
+    /// 由管理器并到这份基地清单之后（FX-0059 / 0061），所以这里没有静态可变状态。
     /// 文件名同时用于加载期的身份判定与打包期的副本剔除。
     /// </summary>
     public static readonly string[] BaseSharedAssemblyFileNames =
@@ -32,10 +32,10 @@ public static class PluginContractInfo
 }
 
 /// <summary>
-/// 一次生命周期钩子的结果（ADR-0030）。拒绝带诊断；钩子抛异常是故障，不走这里。
+/// 一次生命周期钩子的结果（FX-0030）。拒绝带诊断；钩子抛异常是故障，不走这里。
 /// </summary>
 /// <param name="Allowed">是否允许继续。</param>
-/// <param name="Diagnostic">拒绝的诊断（ADR-0059）；允许时为 <see langword="null"/>。</param>
+/// <param name="Diagnostic">拒绝的诊断（FX-0059）；允许时为 <see langword="null"/>。</param>
 public readonly record struct PluginHookResult(bool Allowed, PluginDiagnostic? Diagnostic)
 {
     /// <summary>拒绝原因的快捷读法；允许时为 <see langword="null"/>。</summary>
@@ -54,13 +54,13 @@ public readonly record struct PluginHookResult(bool Allowed, PluginDiagnostic? D
 }
 
 /// <summary>
-/// 插件作者实现的契约（ADR-0008）。钩子只承诺顺序与幂等，不承诺与 BDS 阶段的对应（ADR-0013）。
-/// 钩子异步并接收取消令牌（ADR-0059），取消是协作式的：插件应尽快尊重令牌返回。
+/// 插件作者实现的契约（FX-0008）。钩子只承诺顺序与幂等，不承诺与 BDS 阶段的对应（FX-0013）。
+/// 钩子异步并接收取消令牌（FX-0059），取消是协作式的：插件应尽快尊重令牌返回。
 ///
 /// 钩子跑在**线程池**线程上，没有 <c>SynchronizationContext</c>：在服务端线程上用
 /// <c>GetAwaiter().GetResult()</c> 等挂在服务端线程的 <c>Task.Delay</c> / <c>Task.Yield</c> 会死锁，
 /// 所以框架一律把钩子投到线程池再阻塞等待。插件内部照常 <c>await</c> 即可；要操作只在服务端线程
-/// 成立的东西，自己回到载体的上下文里（ADR-0061）。
+/// 成立的东西，自己回到载体的上下文里（FX-0061）。
 /// </summary>
 public interface IPlugin
 {
@@ -69,7 +69,7 @@ public interface IPlugin
     /// <param name="cancellationToken">取消装载。</param>
     ValueTask OnLoad(IPluginContext context, CancellationToken cancellationToken);
     /// <summary>
-    /// 启用：可以接活了。成功后打开作用域闸门；拒绝时留在册、未启用（ADR-0030 / 0035）。
+    /// 启用：可以接活了。成功后打开作用域闸门；拒绝时留在册、未启用（FX-0030 / 0035）。
     /// 取消时保持停用。
     /// </summary>
     /// <param name="cancellationToken">取消启用。</param>
@@ -77,17 +77,17 @@ public interface IPlugin
 
     /// <summary>
     /// 停用：停止接活。框架先关闭作用域闸门，不再投递事件与定时器回调；已在执行的回调允许跑完。
-    /// 拒绝时闸门重开；卸载经停用，同样中止（ADR-0030 / 0035）。
-    /// 父级态下由父级驱动；自持态正常退出时不会被调用。故障卸载与装载回滚仍会调用（ADR-0020 / 0030）。
-    /// 取消表示框架不再等待，记账后继续后续阶段（ADR-0063）。
+    /// 拒绝时闸门重开；卸载经停用，同样中止（FX-0030 / 0035）。
+    /// 父级态下由父级驱动；自持态正常退出时不会被调用。故障卸载与装载回滚仍会调用（FX-0020 / 0030）。
+    /// 取消表示框架不再等待，记账后继续后续阶段（FX-0063）。
     /// </summary>
     /// <param name="cancellationToken">取消等待。</param>
     ValueTask<PluginHookResult> OnDisable(CancellationToken cancellationToken);
 
     /// <summary>
     /// 卸载：释放自己持有的东西。父级态下由父级驱动；自持态正常退出时不会被调用，
-    /// 故障卸载与装载回滚仍会调用（ADR-0020 / 0030）—— 必须执行完的收尾不要只放在这里。
-    /// 抛出按故障处理；取消表示框架不再等待，记账后继续（ADR-0063）。
+    /// 故障卸载与装载回滚仍会调用（FX-0020 / 0030）—— 必须执行完的收尾不要只放在这里。
+    /// 抛出按故障处理；取消表示框架不再等待，记账后继续（FX-0063）。
     /// </summary>
     /// <param name="cancellationToken">取消等待。</param>
     ValueTask OnUnload(CancellationToken cancellationToken);
