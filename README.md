@@ -11,7 +11,7 @@ The framework itself and the other packages live under
 ## Referencing it
 
 ```xml
-<PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[3.0.0]" ExcludeAssets="runtime" />
+<PackageReference Include="Hosihikari.Plugin.Abstractions" Version="[2.0.0]" ExcludeAssets="runtime" />
 ```
 
 **`ExcludeAssets="runtime"` is not optional.** The contract lives in the **shared layer** — the
