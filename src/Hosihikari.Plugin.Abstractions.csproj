@@ -28,14 +28,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- 清单模型与打包器共用（ADR-0059），所以是独立包；契约的签名还用到它，编译引用必须能传递到加载器作者。
+    <!-- 清单模型与打包器共用（FX-0059），所以是独立包；契约的签名还用到它，编译引用必须能传递到加载器作者。
          runtime 排除：模型随核心驻留共享层，插件包里不该再出现副本。 -->
     <ProjectReference Include="../model/Hosihikari.Plugin.Models.csproj" ExcludeAssets="runtime" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- 只引抽象包（ADR-0007）：实现包留在 PluginManager，契约因此能驻留共享层。
-         依赖注入抽象包只为 ICarrierServicesConfigurator 的 IServiceCollection（ADR-0064）。 -->
+    <!-- 只引抽象包（FX-0007）：实现包留在 PluginManager，契约因此能驻留共享层。
+         依赖注入抽象包只为 ICarrierServicesConfigurator 的 IServiceCollection（FX-0064）。 -->
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.15" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.15" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.15" />
