@@ -3,7 +3,7 @@
     <Project Path="src/Hosihikari.Plugin.Abstractions.csproj" />
   </Folder>
   <Folder Name="/model/">
-    <Project Path="model/Hosihikari.Plugin.Model.csproj" />
+    <Project Path="model/Hosihikari.Plugin.Models.csproj" />
   </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Hosihikari.Plugin.Templates/Hosihikari.Plugin.Templates.csproj" />
