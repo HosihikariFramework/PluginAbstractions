@@ -25,9 +25,20 @@ public interface IPluginContext
     /// 事件总线。订阅由插件作用域持有，卸载时框架统一收回（FX-0007）；仍在 <c>OnUnload</c> 里显式退订
     /// 是好习惯，漏退不会把 ALC 钉死，但会让卸载多活一轮回收验证（FX-0004）。
     /// </summary>
+    /// <remarks>
+    /// 闸门在 <c>OnLoad</c> 期间是关着的（FX-0035），所以这里订阅的东西要等 <c>OnEnable</c>
+    /// 成功返回之后才会开始收；在 <c>OnLoad</c> 里 <c>Publish</c> 也不会到达本插件的订阅者。
+    /// 需要载入即处理的事件，在 <c>OnEnable</c> 里发。
+    /// </remarks>
     IEventBus Events { get; }
 
-    /// <summary>调度器。跑在线程池上，不承诺游戏主线程（FX-0013）。</summary>
+    /// <summary>
+    /// 调度器。跑在线程池上，不承诺游戏主线程（FX-0013）。
+    /// </summary>
+    /// <remarks>
+    /// 与事件同一条闸门（FX-0035）：<c>OnLoad</c> 里排的定时器如果在启用前到期，那一次回调
+    /// 不会补跑。要保证跑到，排到 <c>OnEnable</c> 之后。
+    /// </remarks>
     IScheduler Scheduler { get; }
 
     /// <summary>
