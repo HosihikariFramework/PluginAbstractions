@@ -65,6 +65,10 @@ public readonly record struct PluginHookResult(bool Allowed, PluginDiagnostic? D
 public interface IPlugin
 {
     /// <summary>载入。此时依赖已就绪；服务器未必已就绪。取消按装载回滚处理，不留半加载状态。</summary>
+    /// <remarks>
+    /// 作用域闸门此时仍然关着（FX-0035）：这里订阅的事件与排的定时器都要等
+    /// <see cref="OnEnable"/> 成功返回后才开始生效，在此之前到达的会被丢弃。
+    /// </remarks>
     /// <param name="context">框架交给插件的一切。</param>
     /// <param name="cancellationToken">取消装载。</param>
     ValueTask OnLoad(IPluginContext context, CancellationToken cancellationToken);
@@ -72,6 +76,10 @@ public interface IPlugin
     /// 启用：可以接活了。成功后打开作用域闸门；拒绝时留在册、未启用（FX-0030 / 0035）。
     /// 取消时保持停用。
     /// </summary>
+    /// <remarks>
+    /// 闸门是在本方法<b>返回之后</b>才开的：这里的 <c>Publish</c> 到不了自己的订阅者，
+    /// 这里排的零延时任务也是和开闸赛跑，不保证跑得到。要稳，等返回之后再发、再排。
+    /// </remarks>
     /// <param name="cancellationToken">取消启用。</param>
     ValueTask<PluginHookResult> OnEnable(CancellationToken cancellationToken);
 
