@@ -76,6 +76,10 @@ public interface IPlugin
     /// 启用：可以接活了。成功后打开作用域闸门；拒绝时留在册、未启用（FX-0030 / 0035）。
     /// 取消时保持停用。
     /// </summary>
+    /// <remarks>
+    /// 闸门是在本方法<b>返回之后</b>才开的：这里的 <c>Publish</c> 到不了自己的订阅者，
+    /// 这里排的零延时任务也是和开闸赛跑，不保证跑得到。要稳，等返回之后再发、再排。
+    /// </remarks>
     /// <param name="cancellationToken">取消启用。</param>
     ValueTask<PluginHookResult> OnEnable(CancellationToken cancellationToken);
 

@@ -27,8 +27,9 @@ public interface IPluginContext
     /// </summary>
     /// <remarks>
     /// 闸门在 <c>OnLoad</c> 期间是关着的（FX-0035），所以这里订阅的东西要等 <c>OnEnable</c>
-    /// 成功返回之后才会开始收；在 <c>OnLoad</c> 里 <c>Publish</c> 也不会到达本插件的订阅者。
-    /// 需要载入即处理的事件，在 <c>OnEnable</c> 里发。
+    /// 成功返回之后才会开始收。在 <c>OnLoad</c> 里 <c>Publish</c> 到不了本插件的订阅者；
+    /// 在 <c>OnEnable</c> 里发也一样，那时闸门还没开。要让自己的 handler 收到，得等钩子
+    /// 返回之后。
     /// </remarks>
     IEventBus Events { get; }
 
@@ -37,7 +38,7 @@ public interface IPluginContext
     /// </summary>
     /// <remarks>
     /// 与事件同一条闸门（FX-0035）：<c>OnLoad</c> 里排的定时器如果在启用前到期，那一次回调
-    /// 不会补跑。要保证跑到，排到 <c>OnEnable</c> 之后。
+    /// 不会补跑。在 <c>OnEnable</c> 里排零延时也同样是和开闸赛跑，不保证。
     /// </remarks>
     IScheduler Scheduler { get; }
 
